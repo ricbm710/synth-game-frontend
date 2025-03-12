@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+@theme {
+  --color-col-1: #8ecae6;
+  --color-col-2: #219ebc;
+  --color-col-3: #023047;
+  --color-col-4: #ffb703;
+  --color-col-5: #fb8500;
+}
