@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inconsolata";
 
 @theme {
   --color-col-1: #8ecae6;
@@ -6,4 +7,10 @@
   --color-col-3: #023047;
   --color-col-4: #ffb703;
   --color-col-5: #fb8500;
+  --color-col-disabled: oklch(0.77 0.04 252.07);
+  --color-col-error: oklch(0.53 0.22 26.88);
+}
+
+body {
+  font-family: "Inconsolata Variable", monospace;
 }
