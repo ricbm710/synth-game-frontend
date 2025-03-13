@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import Layout from "./Layout";
 //pages
 import Home from "./pages/Home";
+import Game from "./pages/Game";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="*" element={<div>not found</div>} />
+        <Route path="play" element={<Game />} />
       </Route>
     </Routes>
   );

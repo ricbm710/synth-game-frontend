@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   //user state
@@ -27,13 +28,17 @@ const Home = () => {
     }
   };
 
+  //navigation
+  const navigate = useNavigate();
+
   //submit event
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     //prevents page reload
     e.preventDefault();
     //stores in LocalStorage
     localStorage.setItem("user", user);
-    console.log(`user: ${user} saved`);
+    //redirects to Game component
+    navigate("play");
   };
 
   return (
