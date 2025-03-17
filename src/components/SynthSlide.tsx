@@ -4,29 +4,31 @@ import { Synth } from "../types/Synth";
 
 interface SyntSlideProps {
   synths: Synth[];
-  interval?: number;
+  interval: number;
 }
 
-const SynthSlide = ({ synths }: SyntSlideProps) => {
-  // const [currentIndex, setCurrentIndex] = useState<number>(0);
-  // const [gameOver, setGameOver] = useState(false);
+const SynthSlide = ({ synths, interval }: SyntSlideProps) => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [gameOver, setGameOver] = useState(false);
 
-  console.log(synths);
+  useEffect(() => {
+    if (currentIndex + 1 >= synths.length) {
+      setGameOver(true);
+      return; //stop timer
+    }
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => prev + 1);
+    }, interval);
+    return () => clearInterval(timer);
+  }, [currentIndex]);
 
-  // useEffect(() => {
-  //   if (currentIndex >= synths.length) {
-  //     setGameOver(true);
-  //     return; // Stop the effect
-  //   }
-
-  //   const timer = setInterval(() => {
-  //     setCurrentIndex((prev) => prev + 1);
-  //   }, interval);
-
-  //   return () => clearInterval(timer);
-  // }, [currentIndex, interval]);
-
-  return <div>{synths[4].model}</div>;
+  return (
+    <div>
+      {synths[currentIndex].model}
+      <p>{currentIndex}</p>
+      <p>{gameOver && "se acabo"}</p>
+    </div>
+  );
 };
 
 export default SynthSlide;

@@ -15,6 +15,9 @@ const Game = () => {
   //synths to play loading...
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  //time per synth (ms)
+  const TIMEXSYNTH = 1000;
+
   useEffect(() => {
     const getAllSynthsCaller = async () => {
       try {
@@ -36,7 +39,11 @@ const Game = () => {
     }
   }, [allSynths]);
 
-  return <div>{!isLoading && <SynthSlide synths={synthsToPlay} />}</div>;
+  return (
+    <div>
+      {!isLoading && <SynthSlide synths={synthsToPlay} interval={TIMEXSYNTH} />}
+    </div>
+  );
 };
 
 export default Game;

@@ -1,5 +1,8 @@
 import React, { ChangeEvent, useState } from "react";
+//rrd
 import { useNavigate } from "react-router-dom";
+//components
+import Rules from "../components/Rules";
 
 const Home = () => {
   //user state
@@ -45,7 +48,7 @@ const Home = () => {
     <div className="pt-4">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center text-lg"
+        className="flex flex-col items-center justify-center text-lg mb-2"
       >
         <label htmlFor="user" className="p-2 font-bold">
           Enter your ID:
@@ -74,6 +77,7 @@ const Home = () => {
           Start Game
         </button>
       </form>
+      <Rules />
     </div>
   );
 };
