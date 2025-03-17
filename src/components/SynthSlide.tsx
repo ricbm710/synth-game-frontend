@@ -11,6 +11,12 @@ const SynthSlide = ({ synths, interval }: SyntSlideProps) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [gameOver, setGameOver] = useState(false);
 
+  //image path
+  const IMGPATH =
+    import.meta.env.VITE_IMAGE_PATH === undefined
+      ? ""
+      : import.meta.env.VITE_IMAGE_PATH;
+
   useEffect(() => {
     if (currentIndex + 1 >= synths.length) {
       setGameOver(true);
@@ -24,9 +30,13 @@ const SynthSlide = ({ synths, interval }: SyntSlideProps) => {
 
   return (
     <div>
-      {synths[currentIndex].model}
-      <p>{currentIndex}</p>
-      <p>{gameOver && "se acabo"}</p>
+      <h3 className="text-center text-xl">Synth # {currentIndex + 1}</h3>
+      <div>
+        <img
+          src={`${IMGPATH}/images/${synths[currentIndex].image_url}`}
+          alt={synths[currentIndex].image_url}
+        />
+      </div>
     </div>
   );
 };
