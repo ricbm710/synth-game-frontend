@@ -16,7 +16,7 @@ const Game = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   //time per synth (ms)
-  const TIMEXSYNTH = 1000;
+  const TIMEXSYNTH = 30000;
 
   useEffect(() => {
     const getAllSynthsCaller = async () => {
@@ -41,7 +41,14 @@ const Game = () => {
 
   return (
     <div>
-      {!isLoading && <SynthSlide synths={synthsToPlay} interval={TIMEXSYNTH} />}
+      {!isLoading && (
+        <SynthSlide
+          synths={synthsToPlay}
+          interval={TIMEXSYNTH}
+          manufacturers={allSynths.map((synth) => synth.manufacturer)}
+          models={allSynths.map((synth) => synth.model)}
+        />
+      )}
     </div>
   );
 };
