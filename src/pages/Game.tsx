@@ -16,7 +16,7 @@ const Game = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   //time per synth (ms)
-  const TIMEXSYNTH = 30000;
+  const TIMEXSYNTH = 20000;
 
   useEffect(() => {
     const getAllSynthsCaller = async () => {

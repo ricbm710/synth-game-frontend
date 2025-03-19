@@ -19,10 +19,12 @@ const SynthSlide = ({
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState<number>(0);
 
+  //countdown
+  const [counter, setCounter] = useState<number>(interval / 1000);
+
   //autocomplete feature
   const [manufacturerInput, setManufacturerInput] = useState<string>(""); // for manufacturer input
   const [modelInput, setModelInput] = useState<string>(""); // for model input
-  const [isValid, setIsValid] = useState<boolean>(false);
   const [manufacturerSuggestions, setManufacturerSuggestions] = useState<
     string[]
   >([]); // for manufacturer suggestions
@@ -43,12 +45,23 @@ const SynthSlide = ({
   const user = localStorage.getItem("user");
 
   useEffect(() => {
+    const timer = setInterval(() => {
+      //countdown
+      setCounter((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer); // Cleanup on unmount
+  }, []);
+
+  useEffect(() => {
     //clear autocomplete
     setManufacturerInput("");
     setModelInput("");
     setManufacturerSuggestions([]);
     setModelSuggestions([]);
-    setIsValid(false);
+
+    //countdown restart
+    setCounter(interval / 1000);
 
     if (currentIndex + 1 >= synths.length) {
       setGameOver(true);
@@ -74,7 +87,6 @@ const SynthSlide = ({
       } else {
         setManufacturerSuggestions([]);
       }
-      setIsValid(manufacturers.includes(value));
     } else if (name === "model") {
       setModelInput(value);
       if (value) {
@@ -91,7 +103,6 @@ const SynthSlide = ({
   const handleSelect = (value: string, field: "manufacturer" | "model") => {
     if (field === "manufacturer") {
       setManufacturerInput(value);
-      setIsValid(true);
     } else {
       setModelInput(value);
     }
@@ -143,6 +154,11 @@ const SynthSlide = ({
           className="border-2 border-col-3 rounded-md"
         />
       </div>
+      <div className="w-[60px] mx-auto border-3 rounded-4xl border-col-error">
+        <p className="text-center text-col-error font-bold text-4xl">
+          {counter}
+        </p>
+      </div>
       <div className="flex flex-col mt-2">
         <h3 className="text-center text-xl font-bold">Guess:</h3>
         <form className="flex flex-col items-center">
@@ -152,7 +168,6 @@ const SynthSlide = ({
                 Manufacturer:
               </label>
               <div className="relative">
-                {" "}
                 {/* Add relative positioning to the parent div */}
                 <input
                   type="text"
@@ -185,7 +200,6 @@ const SynthSlide = ({
                 Model:
               </label>
               <div className="relative">
-                {" "}
                 {/* Add relative positioning to the parent div */}
                 <input
                   type="text"
