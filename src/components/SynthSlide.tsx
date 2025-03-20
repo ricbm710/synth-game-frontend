@@ -19,6 +19,12 @@ const SynthSlide = ({
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState<number>(0);
 
+  //guess state
+  const [manufacturerGuessed, setManufacturerGuessed] =
+    useState<boolean>(false);
+  const [modelGuessed, setModelGuessed] = useState<boolean>(false);
+  const [submitClicked, setSubmitClicked] = useState<boolean>(false);
+
   //countdown
   const [counter, setCounter] = useState<number>(interval / 1000);
 
@@ -45,33 +51,40 @@ const SynthSlide = ({
   const user = localStorage.getItem("user");
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      //countdown
-      setCounter((prev) => prev - 1);
-    }, 1000);
+    if (gameOver || submitClicked) return; // Stop everything when game over or submitted
 
-    return () => clearInterval(timer); // Cleanup on unmount
-  }, []);
-
-  useEffect(() => {
     //clear autocomplete
     setManufacturerInput("");
     setModelInput("");
     setManufacturerSuggestions([]);
     setModelSuggestions([]);
 
-    //countdown restart
-    setCounter(interval / 1000);
+    //guessed states
+    setManufacturerGuessed(false);
+    setModelGuessed(false);
+    setSubmitClicked(false);
 
-    if (currentIndex + 1 >= synths.length) {
-      setGameOver(true);
-      return; //stop timer
-    }
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => prev + 1);
+    setCounter(interval / 1000); // Reset counter
+
+    //countdown
+    const countdownTimer = setInterval(() => {
+      setCounter((prev) => prev - 1);
+    }, 1000);
+
+    //index
+    const indexTimer = setTimeout(() => {
+      if (currentIndex + 1 < synths.length) {
+        setCurrentIndex((prev) => prev + 1);
+      } else {
+        setGameOver(true);
+      }
     }, interval);
-    return () => clearInterval(timer);
-  }, [currentIndex]);
+
+    return () => {
+      clearInterval(countdownTimer);
+      clearTimeout(indexTimer);
+    };
+  }, [currentIndex, submitClicked, gameOver]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -138,6 +151,25 @@ const SynthSlide = ({
     };
   }, []);
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitClicked(true);
+
+    if (manufacturerInput === synths[currentIndex].manufacturer) {
+      setManufacturerGuessed(true);
+      setScore((prev) => prev + 5);
+    }
+    if (modelInput === synths[currentIndex].model) {
+      setModelGuessed(true);
+      setScore((prev) => prev + 5);
+    }
+
+    setTimeout(() => {
+      setSubmitClicked(false);
+      setCurrentIndex((prev) => (prev + 1 < synths.length ? prev + 1 : prev));
+    }, 2000); // 2-second delay before continuing
+  };
+
   return (
     <div>
       <div className="flex justify-around p-2 bg-col-2 text-lg">
@@ -154,14 +186,22 @@ const SynthSlide = ({
           className="border-2 border-col-3 rounded-md"
         />
       </div>
-      <div className="w-[60px] mx-auto border-3 rounded-4xl border-col-error">
-        <p className="text-center text-col-error font-bold text-4xl">
+      <div
+        className={`w-[60px] mx-auto border-3 rounded-4xl ${
+          !submitClicked ? "border-col-error" : "border-gray-600"
+        }`}
+      >
+        <p
+          className={`text-center font-bold text-4xl ${
+            !submitClicked ? "text-col-error" : "text-gray-600"
+          }`}
+        >
           {counter}
         </p>
       </div>
       <div className="flex flex-col mt-2">
         <h3 className="text-center text-xl font-bold">Guess:</h3>
-        <form className="flex flex-col items-center">
+        <form className="flex flex-col items-center" onSubmit={handleSubmit}>
           <div className="flex flex-row justify-around gap-4">
             <div className="flex flex-col">
               <label htmlFor="manufacturer" className="text-center">
@@ -171,6 +211,7 @@ const SynthSlide = ({
                 {/* Add relative positioning to the parent div */}
                 <input
                   type="text"
+                  autoComplete="off"
                   name="manufacturer"
                   className="bg-white w-[175px] p-2 border border-gray-300 rounded-md"
                   onChange={handleChange}
@@ -194,6 +235,15 @@ const SynthSlide = ({
                   </ul>
                 )}
               </div>
+              <p
+                className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
+                  submitClicked
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-4"
+                } ${manufacturerGuessed ? "text-col-ok" : "text-col-error"}`}
+              >
+                {manufacturerGuessed ? "+5" : "X"}
+              </p>
             </div>
             <div className="flex flex-col">
               <label htmlFor="model" className="text-center">
@@ -203,6 +253,7 @@ const SynthSlide = ({
                 {/* Add relative positioning to the parent div */}
                 <input
                   type="text"
+                  autoComplete="off"
                   name="model"
                   className="bg-white w-[175px] p-2 border border-gray-300 rounded-md"
                   onChange={handleChange}
@@ -226,11 +277,25 @@ const SynthSlide = ({
                   </ul>
                 )}
               </div>
+              <p
+                className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
+                  submitClicked
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-4"
+                } ${modelGuessed ? "text-col-ok" : "text-col-error"}`}
+              >
+                {modelGuessed ? "+5" : "X"}
+              </p>
             </div>
           </div>
           <button
             type="submit"
-            className="my-4 p-2 border rounded-md bg-col-4 w-[175px] font-semibold text-lg"
+            className={`my-4 p-2 border rounded-md w-[175px] font-semibold text-lg ${
+              submitClicked
+                ? "bg-col-disabled text-gray-500 cursor-not-allowed"
+                : "bg-col-4"
+            }`}
+            disabled={submitClicked}
           >
             Submit
           </button>
