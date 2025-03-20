@@ -166,7 +166,11 @@ const SynthSlide = ({
 
     setTimeout(() => {
       setSubmitClicked(false);
-      setCurrentIndex((prev) => (prev + 1 < synths.length ? prev + 1 : prev));
+      if (currentIndex === synths.length - 1) {
+        setGameOver(true);
+      } else {
+        setCurrentIndex((prev) => prev + 1);
+      }
     }, 2000); // 2-second delay before continuing
   };
 
@@ -176,131 +180,142 @@ const SynthSlide = ({
         <p>ID:{user}</p>
         <p>Score:{score}</p>
       </div>
-      <h3 className="text-center text-xl font-bold mt-4 mb-2">
-        Synth # {currentIndex + 1}
-      </h3>
-      <div className="max-h-xs w-auto p-2 ">
-        <img
-          src={`${IMGPATH}/images/${synths[currentIndex].image_url}`}
-          alt={synths[currentIndex].image_url}
-          className="border-2 border-col-3 rounded-md"
-        />
-      </div>
-      <div
-        className={`w-[60px] mx-auto border-3 rounded-4xl ${
-          !submitClicked ? "border-col-error" : "border-gray-600"
-        }`}
-      >
-        <p
-          className={`text-center font-bold text-4xl ${
-            !submitClicked ? "text-col-error" : "text-gray-600"
-          }`}
-        >
-          {counter}
-        </p>
-      </div>
-      <div className="flex flex-col mt-2">
-        <h3 className="text-center text-xl font-bold">Guess:</h3>
-        <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-          <div className="flex flex-row justify-around gap-4">
-            <div className="flex flex-col">
-              <label htmlFor="manufacturer" className="text-center">
-                Manufacturer:
-              </label>
-              <div className="relative">
-                {/* Add relative positioning to the parent div */}
-                <input
-                  type="text"
-                  autoComplete="off"
-                  name="manufacturer"
-                  className="bg-white w-[175px] p-2 border border-gray-300 rounded-md"
-                  onChange={handleChange}
-                  value={manufacturerInput}
-                  ref={manufacturerInputRef} // Add ref for manufacturer input
-                />
-                {manufacturerSuggestions.length > 0 && (
-                  <ul
-                    ref={manufacturerSuggestionsRef} // Add ref for manufacturer suggestions
-                    className="absolute w-[175px] bg-white border rounded mt-1 max-h-40 overflow-auto z-10"
-                  >
-                    {manufacturerSuggestions.map((item) => (
-                      <li
-                        key={item}
-                        className="p-2 cursor-pointer hover:bg-gray-200"
-                        onClick={() => handleSelect(item, "manufacturer")}
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              <p
-                className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
-                  submitClicked
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-4"
-                } ${manufacturerGuessed ? "text-col-ok" : "text-col-error"}`}
-              >
-                {manufacturerGuessed ? "+5" : "X"}
-              </p>
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="model" className="text-center">
-                Model:
-              </label>
-              <div className="relative">
-                {/* Add relative positioning to the parent div */}
-                <input
-                  type="text"
-                  autoComplete="off"
-                  name="model"
-                  className="bg-white w-[175px] p-2 border border-gray-300 rounded-md"
-                  onChange={handleChange}
-                  value={modelInput}
-                  ref={modelInputRef} // Add ref for model input
-                />
-                {modelSuggestions.length > 0 && (
-                  <ul
-                    ref={modelSuggestionsRef} // Add ref for model suggestions
-                    className="absolute w-[175px] bg-white border rounded mt-1 max-h-40 overflow-auto z-10"
-                  >
-                    {modelSuggestions.map((item) => (
-                      <li
-                        key={item}
-                        className="p-2 cursor-pointer hover:bg-gray-200"
-                        onClick={() => handleSelect(item, "model")}
-                      >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              <p
-                className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
-                  submitClicked
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-4"
-                } ${modelGuessed ? "text-col-ok" : "text-col-error"}`}
-              >
-                {modelGuessed ? "+5" : "X"}
-              </p>
-            </div>
+      {!gameOver ? (
+        <div>
+          <h3 className="text-center text-xl font-bold mt-4 mb-2">
+            Synth # {currentIndex + 1}
+          </h3>
+          <div className="max-h-xs w-auto p-2 ">
+            <img
+              src={`${IMGPATH}/images/${synths[currentIndex].image_url}`}
+              alt={synths[currentIndex].image_url}
+              className="border-2 border-col-3 rounded-md"
+            />
           </div>
-          <button
-            type="submit"
-            className={`my-4 p-2 border rounded-md w-[175px] font-semibold text-lg ${
-              submitClicked
-                ? "bg-col-disabled text-gray-500 cursor-not-allowed"
-                : "bg-col-4"
+          <div
+            className={`w-[60px] mx-auto border-3 rounded-4xl ${
+              !submitClicked ? "border-col-error" : "border-gray-600"
             }`}
-            disabled={submitClicked}
           >
-            Submit
-          </button>
-        </form>
-      </div>
+            <p
+              className={`text-center font-bold text-4xl ${
+                !submitClicked ? "text-col-error" : "text-gray-600"
+              }`}
+            >
+              {counter}
+            </p>
+          </div>
+          <div className="flex flex-col mt-2">
+            <h3 className="text-center text-xl font-bold">Guess:</h3>
+            <form
+              className="flex flex-col items-center"
+              onSubmit={handleSubmit}
+            >
+              <div className="flex flex-row justify-around gap-4">
+                <div className="flex flex-col">
+                  <label htmlFor="manufacturer" className="text-center">
+                    Manufacturer:
+                  </label>
+                  <div className="relative">
+                    {/* Add relative positioning to the parent div */}
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      name="manufacturer"
+                      className="bg-white w-[175px] p-2 border border-gray-300 rounded-md"
+                      onChange={handleChange}
+                      value={manufacturerInput}
+                      ref={manufacturerInputRef} // Add ref for manufacturer input
+                    />
+                    {manufacturerSuggestions.length > 0 && (
+                      <ul
+                        ref={manufacturerSuggestionsRef} // Add ref for manufacturer suggestions
+                        className="absolute w-[175px] bg-white border rounded mt-1 max-h-40 overflow-auto z-10"
+                      >
+                        {manufacturerSuggestions.map((item) => (
+                          <li
+                            key={item}
+                            className="p-2 cursor-pointer hover:bg-gray-200"
+                            onClick={() => handleSelect(item, "manufacturer")}
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <p
+                    className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
+                      submitClicked
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-4"
+                    } ${
+                      manufacturerGuessed ? "text-col-ok" : "text-col-error"
+                    }`}
+                  >
+                    {manufacturerGuessed ? "+5" : "X"}
+                  </p>
+                </div>
+                <div className="flex flex-col">
+                  <label htmlFor="model" className="text-center">
+                    Model:
+                  </label>
+                  <div className="relative">
+                    {/* Add relative positioning to the parent div */}
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      name="model"
+                      className="bg-white w-[175px] p-2 border border-gray-300 rounded-md"
+                      onChange={handleChange}
+                      value={modelInput}
+                      ref={modelInputRef} // Add ref for model input
+                    />
+                    {modelSuggestions.length > 0 && (
+                      <ul
+                        ref={modelSuggestionsRef} // Add ref for model suggestions
+                        className="absolute w-[175px] bg-white border rounded mt-1 max-h-40 overflow-auto z-10"
+                      >
+                        {modelSuggestions.map((item) => (
+                          <li
+                            key={item}
+                            className="p-2 cursor-pointer hover:bg-gray-200"
+                            onClick={() => handleSelect(item, "model")}
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                  <p
+                    className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
+                      submitClicked
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 translate-y-4"
+                    } ${modelGuessed ? "text-col-ok" : "text-col-error"}`}
+                  >
+                    {modelGuessed ? "+5" : "X"}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className={`my-4 p-2 border rounded-md w-[175px] font-semibold text-lg ${
+                  submitClicked
+                    ? "bg-col-disabled text-gray-500 cursor-not-allowed"
+                    : "bg-col-4"
+                }`}
+                disabled={submitClicked}
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <p>Game Over</p>
+      )}
     </div>
   );
 };
