@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 //types
 import { Synth } from "../types/Synth";
+//components
+import Leaderboard from "./Leaderboard";
 
 interface SyntSlideProps {
   synths: Synth[];
   interval: number;
   manufacturers: Synth["manufacturer"][];
   models: Synth["model"][];
+  user: string | null;
 }
 
 const SynthSlide = ({
@@ -14,6 +17,7 @@ const SynthSlide = ({
   interval,
   manufacturers,
   models,
+  user,
 }: SyntSlideProps) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [gameOver, setGameOver] = useState(false);
@@ -48,7 +52,7 @@ const SynthSlide = ({
       ? ""
       : import.meta.env.VITE_IMAGE_PATH;
 
-  const user = localStorage.getItem("user");
+  // const user = localStorage.getItem("user");
 
   useEffect(() => {
     if (gameOver || submitClicked) return; // Stop everything when game over or submitted
@@ -314,7 +318,18 @@ const SynthSlide = ({
           </div>
         </div>
       ) : (
-        <p>Game Over</p>
+        <>
+          <div className="bg-col-4 w-[200px] p-2 mx-auto flex flex-col mt-6 mb-6 text-xl border border-col-3 rounded-b-2xl">
+            <p className="text-center">
+              <strong>{user}</strong>, your score was:
+            </p>
+            <p className="text-center mt-2">
+              <strong>{score}</strong> out of{" "}
+              <strong>{synths.length * 10}</strong>
+            </p>
+          </div>
+          <Leaderboard />
+        </>
       )}
     </div>
   );

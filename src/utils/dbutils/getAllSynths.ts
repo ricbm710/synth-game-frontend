@@ -1,5 +1,6 @@
-//types
+//axios
 import axios from "axios";
+//types
 import { Synth } from "../../types/Synth";
 
 export const getAllSynths = async (): Promise<Synth[]> => {
