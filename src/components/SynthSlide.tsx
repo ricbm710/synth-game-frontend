@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Synth } from "../types/Synth";
 //components
 import Leaderboard from "./Leaderboard";
+import { createAttempt } from "../utils/dbutils/createAttempt";
 
 interface SyntSlideProps {
   synths: Synth[];
@@ -55,7 +56,23 @@ const SynthSlide = ({
   // const user = localStorage.getItem("user");
 
   useEffect(() => {
-    if (gameOver || submitClicked) return; // Stop everything when game over or submitted
+    //if game over, store attempt
+    if (gameOver) {
+      const createAttemptCaller = async () => {
+        try {
+          await createAttempt(user!, score);
+          console.log("Attempt stored!");
+        } catch (error: any) {
+          console.error("Error occurred while fetching synths:", error.message);
+        }
+      };
+
+      createAttemptCaller();
+    }
+
+    if (gameOver || submitClicked) {
+      return;
+    } // Stop everything when game over or submitted
 
     //clear autocomplete
     setManufacturerInput("");

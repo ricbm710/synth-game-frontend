@@ -6,7 +6,10 @@ import Rules from "../components/Rules";
 
 const Home = () => {
   //user state
-  const [user, setUser] = useState<string>("");
+  const [user, setUser] = useState<string>(
+    () => localStorage.getItem("user") || ""
+  );
+
   //letter count error
   const [inputError, setInputError] = useState<boolean>(false);
   //max letter count
