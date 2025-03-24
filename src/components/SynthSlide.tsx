@@ -23,6 +23,7 @@ const SynthSlide = ({
 }: SyntSlideProps) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [gameOver, setGameOver] = useState(false);
+  const [attemptStored, setAttemptStored] = useState(false);
   const [score, setScore] = useState<number>(0);
 
   //guess state
@@ -63,6 +64,7 @@ const SynthSlide = ({
       const createAttemptCaller = async () => {
         try {
           await createAttempt(user!, score);
+          setAttemptStored(true);
           console.log("Attempt stored!");
         } catch (error: any) {
           console.error(
@@ -339,18 +341,20 @@ const SynthSlide = ({
           </div>
         </div>
       ) : (
-        <>
-          <div className="bg-col-4 w-[200px] p-2 mx-auto flex flex-col mt-6 mb-6 text-xl border border-col-3 rounded-b-2xl">
-            <p className="text-center">
-              <strong>{user}</strong>, your score was:
-            </p>
-            <p className="text-center mt-2">
-              <strong>{score}</strong> out of{" "}
-              <strong>{synths.length * 10}</strong>
-            </p>
-          </div>
-          <Leaderboard />
-        </>
+        attemptStored && (
+          <>
+            <div className="bg-col-4 w-[200px] p-2 mx-auto flex flex-col mt-6 mb-6 text-xl border border-col-3 rounded-b-2xl">
+              <p className="text-center">
+                <strong>{user}</strong>, your score was:
+              </p>
+              <p className="text-center mt-2">
+                <strong>{score}</strong> out of{" "}
+                <strong>{synths.length * 10}</strong>
+              </p>
+            </div>
+            <Leaderboard />
+          </>
+        )
       )}
     </div>
   );
