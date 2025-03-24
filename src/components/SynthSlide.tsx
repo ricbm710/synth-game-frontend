@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Synth } from "../types/Synth";
 //components
 import Leaderboard from "./Leaderboard";
+//utils
 import { createAttempt } from "../utils/dbutils/createAttempt";
 
 interface SyntSlideProps {
@@ -58,15 +59,18 @@ const SynthSlide = ({
   useEffect(() => {
     //if game over, store attempt
     if (gameOver) {
+      //*create attempt
       const createAttemptCaller = async () => {
         try {
           await createAttempt(user!, score);
           console.log("Attempt stored!");
         } catch (error: any) {
-          console.error("Error occurred while fetching synths:", error.message);
+          console.error(
+            "Error occurred while creating attempt:",
+            error.message
+          );
         }
       };
-
       createAttemptCaller();
     }
 
