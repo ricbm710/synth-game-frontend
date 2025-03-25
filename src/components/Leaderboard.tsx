@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { LeaderboardType } from "../types/LeaderboardType";
 //utils
 import { getLeaderboard } from "../utils/dbutils/getLeaderboard";
+//assets
+import trophyImage from "../assets/trophy2.png";
 
 const Leaderboard = () => {
   // leaderboard
@@ -15,7 +17,6 @@ const Leaderboard = () => {
       try {
         const data = await getLeaderboard();
         setLeaderboard(data);
-        console.log("Leaderboard retrieved!");
         setLoading(false);
       } catch (error: any) {
         console.error(
@@ -28,12 +29,11 @@ const Leaderboard = () => {
     getLeaderboardCaller();
   }, []);
 
-  console.log(leaderboard);
-
   return (
     <>
       {!loading && leaderboard.length > 0 && (
         <div>
+          <img src={trophyImage} className="w-[60px] mx-auto" />
           <h1 className="text-center font-bold text-xl">Leaderboard</h1>
           <div className="p-2 ">
             <table className="w-full max-w-lg bg-col-2 text-center rounded-md">
