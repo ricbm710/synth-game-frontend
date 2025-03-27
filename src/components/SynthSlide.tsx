@@ -5,6 +5,7 @@ import { Synth } from "../types/Synth";
 import Leaderboard from "./Leaderboard";
 //utils
 import { createAttempt } from "../utils/dbutils/createAttempt";
+import { updateSynthTimes } from "../utils/dbutils/updateSynthTimes";
 
 interface SyntSlideProps {
   synths: Synth[];
@@ -55,12 +56,11 @@ const SynthSlide = ({
       ? ""
       : import.meta.env.VITE_IMAGE_PATH;
 
-  // const user = localStorage.getItem("user");
+  //counter 0 & submit button not clicked
 
   useEffect(() => {
-    //if game over, store attempt
+    //-------------------->if game over, store attempt
     if (gameOver) {
-      //*create attempt
       const createAttemptCaller = async () => {
         try {
           await createAttempt(user!, score);
@@ -75,30 +75,19 @@ const SynthSlide = ({
       };
       createAttemptCaller();
     }
-
+    //-------------------->if game over > Stops the counter. if submitClicked, handleSubmit drives the logic
     if (gameOver || submitClicked) {
       return;
-    } // Stop everything when game over or submitted
+    }
 
-    //clear autocomplete
-    setManufacturerInput("");
-    setModelInput("");
-    setManufacturerSuggestions([]);
-    setModelSuggestions([]);
+    resetValuesForSlide();
 
-    //guessed states
-    setManufacturerGuessed(false);
-    setModelGuessed(false);
-    setSubmitClicked(false);
-
-    setCounter(interval / 1000); // Reset counter
-
-    //countdown
+    //countdown every passing second
     const countdownTimer = setInterval(() => {
       setCounter((prev) => prev - 1);
     }, 1000);
 
-    //index
+    //index counter every "interval" amount of seconds
     const indexTimer = setTimeout(() => {
       if (currentIndex + 1 < synths.length) {
         setCurrentIndex((prev) => prev + 1);
@@ -182,6 +171,31 @@ const SynthSlide = ({
     e.preventDefault();
     setSubmitClicked(true);
 
+    checkAnswer();
+
+    setTimeout(() => {
+      setSubmitClicked(false);
+    }, 2000);
+
+    //go to next slide after timeout
+    if (currentIndex === synths.length - 1) {
+      setGameOver(true);
+    } else {
+      setCurrentIndex((prev) => prev + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (!submitClicked) return;
+
+    updateSynthTimes(
+      synths[currentIndex - 1].id,
+      modelGuessed && manufacturerGuessed
+    );
+  }, [submitClicked]);
+
+  //-------------------------------------------------- UTILITIES
+  const checkAnswer = () => {
     if (manufacturerInput === synths[currentIndex].manufacturer) {
       setManufacturerGuessed(true);
       setScore((prev) => prev + 5);
@@ -190,17 +204,25 @@ const SynthSlide = ({
       setModelGuessed(true);
       setScore((prev) => prev + 5);
     }
-
-    setTimeout(() => {
-      setSubmitClicked(false);
-      if (currentIndex === synths.length - 1) {
-        setGameOver(true);
-      } else {
-        setCurrentIndex((prev) => prev + 1);
-      }
-    }, 2000); // 2-second delay before continuing
   };
 
+  const resetValuesForSlide = () => {
+    //clear inputs & suggestion arrays
+    setManufacturerInput("");
+    setModelInput("");
+    setManufacturerSuggestions([]);
+    setModelSuggestions([]);
+
+    //guess states
+    setManufacturerGuessed(false);
+    setModelGuessed(false);
+
+    //submit button
+    setSubmitClicked(false);
+
+    //counter
+    setCounter(interval / 1000); // Reset counter
+  };
   return (
     <div>
       <div className="flex justify-around p-2 bg-col-2 text-lg">

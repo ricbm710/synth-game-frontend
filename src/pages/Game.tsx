@@ -17,7 +17,7 @@ const Game = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   //time per synth (ms)
-  const TIMEXSYNTH = 500;
+  const TIMEXSYNTH = 100000;
 
   //get user
   const [user] = useState<string | null>(() => localStorage.getItem("user"));
