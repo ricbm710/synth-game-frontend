@@ -4,6 +4,7 @@ const Rules = () => {
       <h3 className="text-center text-lg font-bold mb-4">Rules:</h3>
       <ul className="space-y-3 list-disc list-inside">
         <li>Guess the name of vintage synths by their pictures.</li>
+        <li>Level is calculated by accuracy rate.</li>
         <li>
           <span className="font-semibold">Number of randomized synths:</span> 10
         </li>

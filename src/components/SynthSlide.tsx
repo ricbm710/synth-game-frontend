@@ -6,6 +6,7 @@ import Leaderboard from "./Leaderboard";
 //utils
 import { createAttempt } from "../utils/dbutils/createAttempt";
 import { updateSynthTimes } from "../utils/dbutils/updateSynthTimes";
+import { checkLevel } from "../utils/miscutils/checkLevel";
 
 interface SyntSlideProps {
   synths: Synth[];
@@ -32,6 +33,9 @@ const SynthSlide = ({
     useState<boolean>(false);
   const [modelGuessed, setModelGuessed] = useState<boolean>(false);
   const [submitClicked, setSubmitClicked] = useState<boolean>(false);
+
+  //get difficulty level
+  const [level, setLevel] = useState<string>("init");
 
   //countdown
   const [counter, setCounter] = useState<number>(interval / 1000);
@@ -102,6 +106,18 @@ const SynthSlide = ({
     };
   }, [currentIndex, submitClicked, gameOver]);
 
+  useEffect(() => {
+    if (!submitClicked) {
+      //get level on component mount
+      setLevel(
+        checkLevel(
+          synths[currentIndex].times_selected,
+          synths[currentIndex].times_guessed
+        )
+      );
+    }
+  }, [submitClicked]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -140,7 +156,6 @@ const SynthSlide = ({
       : setModelSuggestions([]);
   };
 
-  // Handle click outside to close suggestions
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -234,6 +249,9 @@ const SynthSlide = ({
           <h3 className="text-center text-xl font-bold mt-4 mb-2">
             Synth # {currentIndex + 1}
           </h3>
+          <p className="text-center text-lg">
+            {!submitClicked && `(${level})`}
+          </p>
           <div className="max-h-xs w-auto p-2 ">
             <img
               src={`${IMGPATH}/images/${synths[currentIndex].image_url}`}
