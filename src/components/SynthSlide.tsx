@@ -24,7 +24,7 @@ const SynthSlide = ({
   user,
 }: SyntSlideProps) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [gameOver, setGameOver] = useState(false);
+  const [gameOver, setGameOver] = useState<boolean>(false);
   const [attemptStored, setAttemptStored] = useState(false);
   const [score, setScore] = useState<number>(0);
 
@@ -32,7 +32,7 @@ const SynthSlide = ({
   const [manufacturerGuessed, setManufacturerGuessed] =
     useState<boolean>(false);
   const [modelGuessed, setModelGuessed] = useState<boolean>(false);
-  const [submitClicked, setSubmitClicked] = useState<boolean>(false);
+  const [endOfRound, setEndOfRound] = useState<boolean>(false);
 
   //get difficulty level
   const [level, setLevel] = useState<string>("init");
@@ -79,8 +79,8 @@ const SynthSlide = ({
       };
       createAttemptCaller();
     }
-    //-------------------->if game over > Stops the counter. if submitClicked, handleSubmit drives the logic
-    if (gameOver || submitClicked) {
+    //-------------------->if game over > Stops the counter. if endOfRound, handleSubmit drives the logic
+    if (gameOver || endOfRound) {
       return;
     }
 
@@ -91,7 +91,7 @@ const SynthSlide = ({
       setCounter((prev) => prev - 1);
     }, 1000);
 
-    //index counter every "interval" amount of seconds
+    //timer for every synth on screen
     const indexTimer = setTimeout(() => {
       if (currentIndex + 1 < synths.length) {
         setCurrentIndex((prev) => prev + 1);
@@ -104,10 +104,10 @@ const SynthSlide = ({
       clearInterval(countdownTimer);
       clearTimeout(indexTimer);
     };
-  }, [currentIndex, submitClicked, gameOver]);
+  }, [currentIndex, endOfRound, gameOver]);
 
   useEffect(() => {
-    if (!submitClicked) {
+    if (!endOfRound) {
       //get level on component mount
       setLevel(
         checkLevel(
@@ -116,7 +116,7 @@ const SynthSlide = ({
         )
       );
     }
-  }, [submitClicked]);
+  }, [endOfRound]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -184,12 +184,13 @@ const SynthSlide = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitClicked(true);
+    setEndOfRound(true);
 
     checkAnswer();
 
+    //TODO
     setTimeout(() => {
-      setSubmitClicked(false);
+      setEndOfRound(false);
     }, 2000);
 
     //go to next slide after timeout
@@ -201,13 +202,13 @@ const SynthSlide = ({
   };
 
   useEffect(() => {
-    if (!submitClicked) return;
+    if (!endOfRound) return;
 
     updateSynthTimes(
       synths[currentIndex - 1].id,
       modelGuessed && manufacturerGuessed
     );
-  }, [submitClicked]);
+  }, [endOfRound]);
 
   //-------------------------------------------------- UTILITIES
   const checkAnswer = () => {
@@ -233,7 +234,7 @@ const SynthSlide = ({
     setModelGuessed(false);
 
     //submit button
-    setSubmitClicked(false);
+    setEndOfRound(false);
 
     //counter
     setCounter(interval / 1000); // Reset counter
@@ -249,9 +250,7 @@ const SynthSlide = ({
           <h3 className="text-center text-xl font-bold mt-4 mb-2">
             Synth # {currentIndex + 1}
           </h3>
-          <p className="text-center text-lg">
-            {!submitClicked && `(${level})`}
-          </p>
+          <p className="text-center text-lg">{!endOfRound && `(${level})`}</p>
           <div className="max-h-xs w-auto p-2 ">
             <img
               src={`${IMGPATH}/images/${synths[currentIndex].image_url}`}
@@ -261,12 +260,12 @@ const SynthSlide = ({
           </div>
           <div
             className={`w-[60px] mx-auto border-3 rounded-4xl ${
-              !submitClicked ? "border-col-error" : "border-gray-600"
+              !endOfRound ? "border-col-error" : "border-gray-600"
             }`}
           >
             <p
               className={`text-center font-bold text-4xl ${
-                !submitClicked ? "text-col-error" : "text-gray-600"
+                !endOfRound ? "text-col-error" : "text-gray-600"
               }`}
             >
               {counter}
@@ -313,7 +312,7 @@ const SynthSlide = ({
                   </div>
                   <p
                     className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
-                      submitClicked
+                      endOfRound
                         ? "opacity-100 translate-y-0"
                         : "opacity-0 translate-y-4"
                     } ${
@@ -357,7 +356,7 @@ const SynthSlide = ({
                   </div>
                   <p
                     className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
-                      submitClicked
+                      endOfRound
                         ? "opacity-100 translate-y-0"
                         : "opacity-0 translate-y-4"
                     } ${modelGuessed ? "text-col-ok" : "text-col-error"}`}
@@ -369,11 +368,11 @@ const SynthSlide = ({
               <button
                 type="submit"
                 className={`my-4 p-2 border rounded-md w-[175px] font-semibold text-lg ${
-                  submitClicked
+                  endOfRound
                     ? "bg-col-disabled text-gray-500 cursor-not-allowed"
                     : "bg-col-4"
                 }`}
-                disabled={submitClicked}
+                disabled={endOfRound}
               >
                 Submit
               </button>

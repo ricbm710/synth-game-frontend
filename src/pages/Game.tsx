@@ -7,6 +7,7 @@ import { getPlayableSynths } from "../utils/miscutils/getPlayableSynths";
 import { Synth } from "../types/Synth";
 //components
 import SynthSlide from "../components/SynthSlide";
+import SynthSlider from "../components/SynthSlider";
 
 const Game = () => {
   //all synths available
@@ -17,7 +18,7 @@ const Game = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   //time per synth (ms)
-  const TIMEXSYNTH = 20000;
+  const TIMEXSYNTH = 5000;
 
   //get user
   const [user] = useState<string | null>(() => localStorage.getItem("user"));
@@ -61,7 +62,7 @@ const Game = () => {
   return (
     <div>
       {!isLoading && (
-        <SynthSlide
+        <SynthSlider
           synths={synthsToPlay}
           interval={TIMEXSYNTH}
           manufacturers={allSynths.map((synth) => synth.manufacturer)}
