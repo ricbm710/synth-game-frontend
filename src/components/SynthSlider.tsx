@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Synth } from "../types/Synth";
 //utils
 import { checkLevel } from "../utils/miscutils/checkLevel";
+import { updateSynthTimes } from "../utils/dbutils/updateSynthTimes";
 
 interface SyntSliderProps {
   synths: Synth[];
@@ -94,7 +95,6 @@ const SynthSlider = ({
     return () => {
       clearTimeout(sliderTimer);
       clearInterval(countDown);
-      // clearTimeout(roundTimer);
     };
   }, [currentIndex, roundOver]);
 
@@ -123,6 +123,15 @@ const SynthSlider = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (counter === 0 || roundOver) {
+      updateSynthTimes(
+        synths[currentIndex].id,
+        modelGuessed && manufacturerGuessed
+      );
+    }
+  }, [roundOver, counter]);
 
   //*--------------------------------------------------------------------------->
 

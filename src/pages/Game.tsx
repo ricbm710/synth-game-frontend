@@ -6,7 +6,6 @@ import { getPlayableSynths } from "../utils/miscutils/getPlayableSynths";
 //types
 import { Synth } from "../types/Synth";
 //components
-import SynthSlide from "../components/SynthSlide";
 import SynthSlider from "../components/SynthSlider";
 
 const Game = () => {
