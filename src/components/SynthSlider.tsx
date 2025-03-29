@@ -130,6 +130,7 @@ const SynthSlider = ({
         synths[currentIndex].id,
         modelGuessed && manufacturerGuessed
       );
+      checkAnswer();
     }
   }, [roundOver, counter]);
 
