@@ -41,12 +41,12 @@ const SynthSlide = ({
   const [counter, setCounter] = useState<number>(interval / 1000);
 
   //autocomplete feature
-  const [manufacturerInput, setManufacturerInput] = useState<string>(""); // for manufacturer input
-  const [modelInput, setModelInput] = useState<string>(""); // for model input
+  const [manufacturerInput, setManufacturerInput] = useState<string>("");
+  const [modelInput, setModelInput] = useState<string>("");
   const [manufacturerSuggestions, setManufacturerSuggestions] = useState<
     string[]
-  >([]); // for manufacturer suggestions
-  const [modelSuggestions, setModelSuggestions] = useState<string[]>([]); // for model suggestions
+  >([]);
+  const [modelSuggestions, setModelSuggestions] = useState<string[]>([]);
 
   // Create refs for input and suggestion lists
   const manufacturerInputRef = useRef<HTMLInputElement | null>(null);
