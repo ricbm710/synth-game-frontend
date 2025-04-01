@@ -32,18 +32,32 @@ const Leaderboard = () => {
   return (
     <>
       {!loading && leaderboard.length > 0 && (
-        <div>
-          <img src={trophyImage} className="w-[60px] mx-auto" />
+        <div className="flex flex-col justify-center items-center w-full max-w-3xl mx-auto p-4">
+          <img
+            src={trophyImage}
+            className="w-[60px] sm:w-[80px] md:w-[100px] mx-auto"
+          />
           <h1 className="text-center font-bold text-xl">Leaderboard</h1>
-          <div className="p-2 ">
-            <table className="w-full max-w-lg bg-col-2 text-center rounded-md">
+
+          <div className="overflow-x-auto w-full mt-4">
+            <table className="bg-col-2 text-center rounded-md w-full">
               <thead>
                 <tr>
-                  <th className="px-4 py-2">#</th>
-                  <th className="px-4 py-2">Player</th>
-                  <th className="px-4 py-2">Score</th>
-                  <th className="px-4 py-2">Date</th>
-                  <th className="px-4 py-2">UTC Time</th>
+                  <th className="px-4 py-2 text-sm sm:text-base md:text-lg">
+                    #
+                  </th>
+                  <th className="px-4 py-2 text-sm sm:text-base md:text-lg">
+                    Player
+                  </th>
+                  <th className="px-4 py-2 text-sm sm:text-base md:text-lg">
+                    Score
+                  </th>
+                  <th className="px-4 py-2 text-sm sm:text-base md:text-lg">
+                    Date
+                  </th>
+                  <th className="px-4 py-2 text-sm sm:text-base md:text-lg">
+                    UTC Time
+                  </th>
                 </tr>
               </thead>
               <tbody>

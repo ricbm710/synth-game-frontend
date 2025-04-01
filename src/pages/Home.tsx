@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 //rrd
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 //components
 import Rules from "../components/Rules";
 
@@ -48,12 +48,17 @@ const Home = () => {
   };
 
   return (
-    <div className="pt-4">
+    <div className="flex flex-col items-center justify-center w-full max-w-lg mx-auto p-4">
+      <div className="p-2">
+        <Link to="leaderboard" className="underline text-lg">
+          Check Leaderboard
+        </Link>
+      </div>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col items-center justify-center text-lg mb-2"
       >
-        <label htmlFor="user" className="p-2 font-bold">
+        <label htmlFor="user" className="p-2 font-bold ">
           Enter your ID:
         </label>
         <input
@@ -62,7 +67,7 @@ const Home = () => {
           value={user}
           onChange={handleChange}
           placeholder="some_user_1"
-          className="bg-white w-[200px] p-2 border border-gray-300 rounded-md"
+          className="bg-white w-[200px] sm:w-[300px] md:w-[400px] p-2 border border-gray-300 rounded-md "
         />
         <p
           className="text-col-error text-sm p-2"
@@ -70,7 +75,7 @@ const Home = () => {
         >{`* Reached max character limit (${MAX_LETTERS})`}</p>
         <button
           type="submit"
-          className={`my-4 p-2 border rounded-md ${
+          className={`my-4 p-3 border rounded-md  ${
             user === ""
               ? "bg-col-disabled text-gray-500 cursor-not-allowed"
               : "bg-col-4"

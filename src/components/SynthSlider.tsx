@@ -1,3 +1,5 @@
+//TODO fix attempt not getting stored before Leaderboard renders
+
 import { useEffect, useRef, useState } from "react";
 //types
 import { Synth } from "../types/Synth";
@@ -60,16 +62,21 @@ const SynthSlider = ({
     useState<boolean>(false);
   const [modelGuessed, setModelGuessed] = useState<boolean>(false);
 
-  // const [attemptStored, setAttemptStored] = useState(false);
+  const [attemptStored, setAttemptStored] = useState(false);
 
   //*--------------------------------------------------------------------------->
   useEffect(() => {
+    console.log(
+      `${IMGPATH}/images/${synths[currentIndex].manufacturer.toLowerCase()}/${
+        synths[currentIndex].image_url
+      }`
+    );
     //store attempt
     if (gameOver) {
       const createAttemptCaller = async () => {
         try {
           await createAttempt(user!, score);
-          // setAttemptStored(true);
+          setAttemptStored(true);
           console.log("Attempt stored!");
         } catch (error: any) {
           console.error(
@@ -112,7 +119,7 @@ const SynthSlider = ({
       } else {
         setGameOver(true);
       }
-    }, interval + 3000);
+    }, interval + 1500);
 
     return () => {
       clearTimeout(sliderTimer);
@@ -211,7 +218,7 @@ const SynthSlider = ({
       } else {
         setGameOver(true);
       }
-    }, 3000);
+    }, 1500);
   };
 
   //*--------------------------------------------------------------------------->
@@ -241,7 +248,7 @@ const SynthSlider = ({
 
   return (
     <div>
-      <div className="flex justify-around p-2 bg-col-2 text-lg">
+      <div className="flex justify-around p-2 bg-col-2 text-lg md:text-xl">
         <p>ID:{user}</p>
         <p>Score:{score}</p>
       </div>
@@ -251,11 +258,13 @@ const SynthSlider = ({
             Synth # {currentIndex + 1}
           </h3>
           <p className="text-center text-lg">{`Level: ${level}`}</p>
-          <div className="max-h-xs w-auto p-2 ">
+          <div className="max-h-[300px] md:max-h-[400px] lg:max-h-[450px] xl:max-h-[500px] w-auto p-2 flex justify-center items-center overflow-hidden">
             <img
-              src={`${IMGPATH}/images/${synths[currentIndex].image_url}`}
+              src={`${IMGPATH}/images/${synths[
+                currentIndex
+              ].manufacturer.toLowerCase()}/${synths[currentIndex].image_url}`}
               alt={synths[currentIndex].image_url}
-              className="border-2 border-col-3 rounded-md"
+              className="object-contain max-h-full w-auto border-2 border-col-3 rounded-md"
             />
           </div>
           {(roundOver || counter === 0) && (
@@ -280,7 +289,10 @@ const SynthSlider = ({
           <form className="flex flex-col items-center" onSubmit={handleSubmit}>
             <div className="flex flex-row justify-around gap-4">
               <div className="flex flex-col">
-                <label htmlFor="manufacturer" className="text-center">
+                <label
+                  htmlFor="manufacturer"
+                  className="text-center md:text-xl p-2"
+                >
                   Manufacturer:
                 </label>
                 <div className="relative">
@@ -290,7 +302,7 @@ const SynthSlider = ({
                     type="text"
                     autoComplete="off"
                     name="manufacturer"
-                    className={`w-[175px] p-2 border border-gray-300 rounded-md ${
+                    className={`w-[200px] sm:w-[300px] md:w-[400px] p-2 border border-gray-300 rounded-md ${
                       roundOver || counter === 0
                         ? "bg-col-disabled"
                         : "bg-white"
@@ -328,7 +340,7 @@ const SynthSlider = ({
                 </p>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="model" className="text-center">
+                <label htmlFor="model" className="text-center md:text-xl p-2">
                   Model:
                 </label>
                 <div className="relative">
@@ -338,7 +350,7 @@ const SynthSlider = ({
                     type="text"
                     autoComplete="off"
                     name="model"
-                    className={`w-[175px] p-2 border border-gray-300 rounded-md ${
+                    className={`w-[175px] sm:w-[300px] md:w-[400px] p-2 border border-gray-300 rounded-md ${
                       roundOver || counter === 0
                         ? "bg-col-disabled"
                         : "bg-white"
@@ -391,19 +403,21 @@ const SynthSlider = ({
           </form>
         </div>
       ) : (
-        // if game over
-        <>
-          <div className="bg-col-4 w-[200px] p-2 mx-auto flex flex-col mt-6 mb-6 text-xl border border-col-3 rounded-b-2xl">
-            <p className="text-center">
-              <strong>{user}</strong>, your score was:
-            </p>
-            <p className="text-center mt-2">
-              <strong>{score}</strong> out of{" "}
-              <strong>{synths.length * 10}</strong>
-            </p>
-          </div>
-          <Leaderboard />
-        </>
+        attemptStored && (
+          // if game over & attempt stored
+          <>
+            <div className="bg-col-4 w-[175px] p-2 mx-auto flex flex-col mt-6 mb-6 text-xl border border-col-3 rounded-b-2xl">
+              <p className="text-center">
+                <strong>{user}</strong>, your score was:
+              </p>
+              <p className="text-center mt-2">
+                <strong>{score}</strong> out of{" "}
+                <strong>{synths.length * 10}</strong>
+              </p>
+            </div>
+            <Leaderboard />
+          </>
+        )
       )}
     </div>
   );
