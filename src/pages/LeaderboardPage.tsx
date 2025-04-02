@@ -1,3 +1,4 @@
+//components
 import Leaderboard from "../components/Leaderboard";
 
 const LeaderboardPage = () => {

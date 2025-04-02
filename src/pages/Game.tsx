@@ -17,7 +17,7 @@ const Game = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   //time per synth (ms)
-  const TIMEXSYNTH = 1000;
+  const TIMEXSYNTH = 20000;
 
   //get user
   const [user] = useState<string | null>(() => localStorage.getItem("user"));
@@ -62,7 +62,7 @@ const Game = () => {
     <div>
       {!isLoading && (
         <SynthSlider
-          synths={allSynths}
+          synths={synthsToPlay}
           interval={TIMEXSYNTH}
           manufacturers={allSynths.map((synth) => synth.manufacturer)}
           models={allSynths.map((synth) => synth.model)}

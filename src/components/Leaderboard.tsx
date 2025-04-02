@@ -31,14 +31,15 @@ const Leaderboard = () => {
 
   return (
     <>
-      {!loading && leaderboard.length > 0 && (
+      <div>
+        <img
+          src={trophyImage}
+          className="w-[60px] sm:w-[80px] md:w-[100px] mx-auto"
+        />
+        <h1 className="text-center font-bold text-xl">Leaderboard</h1>
+      </div>
+      {!loading && leaderboard.length > 0 ? (
         <div className="flex flex-col justify-center items-center w-full max-w-3xl mx-auto p-4">
-          <img
-            src={trophyImage}
-            className="w-[60px] sm:w-[80px] md:w-[100px] mx-auto"
-          />
-          <h1 className="text-center font-bold text-xl">Leaderboard</h1>
-
           <div className="overflow-x-auto w-full mt-4">
             <table className="bg-col-2 text-center rounded-md w-full">
               <thead>
@@ -73,6 +74,10 @@ const Leaderboard = () => {
               </tbody>
             </table>
           </div>
+        </div>
+      ) : (
+        <div>
+          <p className="text-center text-lg mt-4">Nothing here yet.</p>
         </div>
       )}
     </>

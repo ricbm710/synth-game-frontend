@@ -66,11 +66,6 @@ const SynthSlider = ({
 
   //*--------------------------------------------------------------------------->
   useEffect(() => {
-    console.log(
-      `${IMGPATH}/images/${synths[currentIndex].manufacturer.toLowerCase()}/${
-        synths[currentIndex].image_url
-      }`
-    );
     //store attempt
     if (gameOver) {
       const createAttemptCaller = async () => {
@@ -159,7 +154,9 @@ const SynthSlider = ({
         synths[currentIndex].id,
         modelGuessed && manufacturerGuessed
       );
-      checkAnswer();
+      if (counter === 0) {
+        checkAnswer();
+      }
     }
   }, [roundOver, counter]);
 
@@ -221,6 +218,15 @@ const SynthSlider = ({
     }, 1500);
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      console.log("Enter");
+      e.preventDefault(); // Prevents the default behavior to stop form submission from happening twice
+      const form = e.currentTarget.closest("form") as HTMLFormElement;
+      form?.requestSubmit(); // Triggers form submission with validation
+    }
+  };
+
   //*--------------------------------------------------------------------------->
 
   const checkAnswer = () => {
@@ -255,152 +261,176 @@ const SynthSlider = ({
       {!gameOver ? (
         <div>
           <h3 className="text-center text-xl font-bold mt-4 mb-2">
-            Synth # {currentIndex + 1}
+            Synth #{currentIndex + 1} ({level})
           </h3>
-          <p className="text-center text-lg">{`Level: ${level}`}</p>
-          <div className="max-h-[300px] md:max-h-[400px] lg:max-h-[450px] xl:max-h-[500px] w-auto p-2 flex justify-center items-center overflow-hidden">
-            <img
-              src={`${IMGPATH}/images/${synths[
-                currentIndex
-              ].manufacturer.toLowerCase()}/${synths[currentIndex].image_url}`}
-              alt={synths[currentIndex].image_url}
-              className="object-contain max-h-full w-auto border-2 border-col-3 rounded-md"
-            />
-          </div>
-          {(roundOver || counter === 0) && (
-            <p className="text-center text-lg mb-2">
-              {synths[currentIndex].manufacturer} - {synths[currentIndex].model}
-            </p>
-          )}
-
-          <div
-            className={`w-[60px] mx-auto border-3 rounded-4xl ${
-              !roundOver && counter > 0 ? "border-col-error" : "border-gray-600"
-            }`}
-          >
-            <p
-              className={`text-center font-bold text-4xl ${
-                !roundOver && counter > 0 ? "text-col-error" : "text-gray-600"
-              }`}
-            >
-              {counter}
-            </p>
-          </div>
-          <form className="flex flex-col items-center" onSubmit={handleSubmit}>
-            <div className="flex flex-row justify-around gap-4">
-              <div className="flex flex-col">
-                <label
-                  htmlFor="manufacturer"
-                  className="text-center md:text-xl p-2"
-                >
-                  Manufacturer:
-                </label>
-                <div className="relative">
-                  {/* Add relative positioning to the parent div */}
-                  {/* --------------------------------------------------------> Manufacturer Input */}
-                  <input
-                    type="text"
-                    autoComplete="off"
-                    name="manufacturer"
-                    className={`w-[200px] sm:w-[300px] md:w-[400px] p-2 border border-gray-300 rounded-md ${
-                      roundOver || counter === 0
-                        ? "bg-col-disabled"
-                        : "bg-white"
-                    } `}
-                    onChange={handleChange}
-                    value={manufacturerInput}
-                    ref={manufacturerInputRef} // Add ref for manufacturer input
-                    disabled={roundOver || counter === 0}
-                  />
-                  {manufacturerSuggestions.length > 0 && (
-                    <ul
-                      ref={manufacturerSuggestionsRef} // Add ref for manufacturer suggestions
-                      className="absolute w-[175px] bg-white border rounded mt-1 max-h-40 overflow-auto z-10"
-                    >
-                      {manufacturerSuggestions.map((item) => (
-                        <li
-                          key={item}
-                          className="p-2 cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleSelect(item, "manufacturer")}
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-                <p
-                  className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
-                    roundOver || counter === 0
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-4"
-                  } ${manufacturerGuessed ? "text-col-ok" : "text-col-error"}`}
-                >
-                  {manufacturerGuessed ? "+5" : "X"}
-                </p>
+          <div className="flex flex-col md:flex-row md:gap-6 justify-center items-center p-4">
+            <div>
+              <div className="max-h-[300px] md:max-h-[400px] lg:max-h-[450px] xl:max-h-[500px] w-auto p-2 flex justify-center items-center overflow-hidden">
+                <img
+                  src={`${IMGPATH}/images/${synths[
+                    currentIndex
+                  ].manufacturer.toLowerCase()}/${
+                    synths[currentIndex].image_url
+                  }`}
+                  alt={synths[currentIndex].image_url}
+                  className="object-contain max-h-full w-auto border-2 border-col-3 rounded-md"
+                />
               </div>
-              <div className="flex flex-col">
-                <label htmlFor="model" className="text-center md:text-xl p-2">
-                  Model:
-                </label>
-                <div className="relative">
-                  {/* Add relative positioning to the parent div */}
-                  {/* --------------------------------------------------------> Model Input */}
-                  <input
-                    type="text"
-                    autoComplete="off"
-                    name="model"
-                    className={`w-[175px] sm:w-[300px] md:w-[400px] p-2 border border-gray-300 rounded-md ${
-                      roundOver || counter === 0
-                        ? "bg-col-disabled"
-                        : "bg-white"
-                    } `}
-                    onChange={handleChange}
-                    value={modelInput}
-                    ref={modelInputRef} // Add ref for model input
-                    disabled={roundOver || counter === 0}
-                  />
-                  {modelSuggestions.length > 0 && (
-                    <ul
-                      ref={modelSuggestionsRef} // Add ref for model suggestions
-                      className="absolute w-[175px] bg-white border rounded mt-1 max-h-40 overflow-auto z-10"
-                    >
-                      {modelSuggestions.map((item) => (
-                        <li
-                          key={item}
-                          className="p-2 cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleSelect(item, "model")}
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+              {(roundOver || counter === 0) && (
+                <p className="text-center text-lg mb-2">
+                  {synths[currentIndex].manufacturer} -{" "}
+                  {synths[currentIndex].model}
+                </p>
+              )}
+              <div
+                className={`w-[60px] mx-auto border-3 rounded-4xl ${
+                  !roundOver && counter > 0
+                    ? "border-col-error"
+                    : "border-gray-600"
+                }`}
+              >
                 <p
-                  className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
-                    roundOver || counter === 0
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-4"
-                  } ${modelGuessed ? "text-col-ok" : "text-col-error"}`}
+                  className={`text-center font-bold text-4xl ${
+                    !roundOver && counter > 0
+                      ? "text-col-error"
+                      : "text-gray-600"
+                  }`}
                 >
-                  {modelGuessed ? "+5" : "X"}
+                  {counter}
                 </p>
               </div>
             </div>
+            <div>
+              <form
+                className="flex flex-col items-center md:gap-12"
+                onSubmit={handleSubmit}
+                onKeyDown={handleKeyPress}
+              >
+                <div className="flex flex-row justify-around gap-4 md:gap-8">
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="manufacturer"
+                      className="text-center md:text-xl p-2"
+                    >
+                      Manufacturer:
+                    </label>
+                    <div className="relative">
+                      {/* Add relative positioning to the parent div */}
+                      {/* --------------------------------------------------------> Manufacturer Input */}
+                      <input
+                        type="text"
+                        autoComplete="off"
+                        name="manufacturer"
+                        className={`w-[175px] sm:w-[175px] md:w-[250px] p-2 border border-gray-300 rounded-md ${
+                          roundOver || counter === 0
+                            ? "bg-col-disabled"
+                            : "bg-white"
+                        } `}
+                        onChange={handleChange}
+                        value={manufacturerInput}
+                        ref={manufacturerInputRef} // Add ref for manufacturer input
+                        disabled={roundOver || counter === 0}
+                      />
+                      {manufacturerSuggestions.length > 0 && (
+                        <ul
+                          ref={manufacturerSuggestionsRef} // Add ref for manufacturer suggestions
+                          className="absolute w-[175px] bg-white border rounded mt-1 max-h-40 overflow-auto z-10"
+                        >
+                          {manufacturerSuggestions.map((item) => (
+                            <li
+                              key={item}
+                              className="p-2 cursor-pointer hover:bg-gray-200"
+                              onClick={() => handleSelect(item, "manufacturer")}
+                            >
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                    {(roundOver || counter === 0) && (
+                      <p
+                        className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
+                          roundOver || counter === 0
+                            ? "opacity-100 translate-y-0"
+                            : "opacity-0 translate-y-4"
+                        } ${
+                          manufacturerGuessed ? "text-col-ok" : "text-col-error"
+                        }`}
+                      >
+                        {manufacturerGuessed ? "+5" : "X"}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="model"
+                      className="text-center md:text-xl p-2"
+                    >
+                      Model:
+                    </label>
+                    <div className="relative">
+                      {/* Add relative positioning to the parent div */}
+                      {/* --------------------------------------------------------> Model Input */}
+                      <input
+                        type="text"
+                        autoComplete="off"
+                        name="model"
+                        className={`w-[175px] sm:w-[175px] md:w-[250px] p-2 border border-gray-300 rounded-md ${
+                          roundOver || counter === 0
+                            ? "bg-col-disabled"
+                            : "bg-white"
+                        } `}
+                        onChange={handleChange}
+                        value={modelInput}
+                        ref={modelInputRef} // Add ref for model input
+                        disabled={roundOver || counter === 0}
+                      />
+                      {modelSuggestions.length > 0 && (
+                        <ul
+                          ref={modelSuggestionsRef} // Add ref for model suggestions
+                          className="absolute w-[175px] bg-white border rounded mt-1 max-h-40 overflow-auto z-10"
+                        >
+                          {modelSuggestions.map((item) => (
+                            <li
+                              key={item}
+                              className="p-2 cursor-pointer hover:bg-gray-200"
+                              onClick={() => handleSelect(item, "model")}
+                            >
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                    {(roundOver || counter === 0) && (
+                      <p
+                        className={`text-center font-bold text-3xl mt-2 transition-all duration-500 ${
+                          roundOver || counter === 0
+                            ? "opacity-100 translate-y-0"
+                            : "opacity-0 translate-y-4"
+                        } ${modelGuessed ? "text-col-ok" : "text-col-error"}`}
+                      >
+                        {modelGuessed ? "+5" : "X"}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-            <button
-              type="submit"
-              className={`my-4 p-2 border rounded-md w-[175px] font-semibold text-lg ${
-                roundOver || counter === 0
-                  ? "bg-col-disabled text-gray-500 cursor-not-allowed"
-                  : "bg-col-4"
-              }`}
-              disabled={roundOver || counter === 0}
-            >
-              Submit
-            </button>
-          </form>
+                <button
+                  type="submit"
+                  className={`p-2 mt-4 border rounded-md w-[175px] font-semibold text-lg ${
+                    roundOver || counter === 0
+                      ? "bg-col-disabled text-gray-500 cursor-not-allowed"
+                      : "bg-col-4"
+                  }`}
+                  disabled={roundOver || counter === 0}
+                >
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
         </div>
       ) : (
         attemptStored && (
