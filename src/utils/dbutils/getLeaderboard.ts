@@ -4,10 +4,9 @@ import axios from "axios";
 import { LeaderboardType } from "../../types/LeaderboardType";
 
 export const getLeaderboard = async (): Promise<LeaderboardType[]> => {
+  const API_URL = import.meta.env.VITE_API_URL;
   try {
-    const result = await axios.get(
-      "http://localhost:3000/api/attempts/leaderboard"
-    );
+    const result = await axios.get(API_URL + "/attempts/leaderboard");
     // Optionally, validate that the data is an array of Synth objects
     if (Array.isArray(result.data)) {
       return result.data as LeaderboardType[]; // Type assertion

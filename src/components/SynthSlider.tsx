@@ -1,5 +1,3 @@
-//TODO fix attempt not getting stored before Leaderboard renders
-
 import { useEffect, useRef, useState } from "react";
 //types
 import { Synth } from "../types/Synth";

@@ -1,8 +1,9 @@
 import axios from "axios";
 
 export const updateSynthTimes = async (id: number, guessed: boolean) => {
+  const API_URL = import.meta.env.VITE_API_URL;
   try {
-    await axios.patch(`http://localhost:3000/api/synths/${id}/stats`, {
+    await axios.patch(API_URL + `/synths/${id}/stats`, {
       guessed,
     });
   } catch (error) {

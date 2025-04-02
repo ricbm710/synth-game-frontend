@@ -2,8 +2,9 @@
 import axios from "axios";
 
 export const createPlayer = async (player_name: string) => {
+  const API_URL = import.meta.env.VITE_API_URL;
   try {
-    await axios.post("http://localhost:3000/api/players", {
+    await axios.post(API_URL + "/players", {
       player_name,
     });
   } catch (error) {

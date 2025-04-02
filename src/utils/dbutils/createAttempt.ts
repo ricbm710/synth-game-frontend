@@ -2,8 +2,9 @@
 import axios from "axios";
 
 export const createAttempt = async (player_name: string, score: number) => {
+  const API_URL = import.meta.env.VITE_API_URL;
   try {
-    await axios.post("http://localhost:3000/api/attempts", {
+    await axios.post(API_URL + "/attempts", {
       player_name,
       score,
     });

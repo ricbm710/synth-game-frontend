@@ -4,8 +4,9 @@ import axios from "axios";
 import { Synth } from "../../types/Synth";
 
 export const getAllSynths = async (): Promise<Synth[]> => {
+  const API_URL = import.meta.env.VITE_API_URL;
   try {
-    const result = await axios.get("http://localhost:3000/api/synths");
+    const result = await axios.get(API_URL + "/synths");
     // Optionally, validate that the data is an array of Synth objects
     if (Array.isArray(result.data)) {
       return result.data as Synth[]; // Type assertion
