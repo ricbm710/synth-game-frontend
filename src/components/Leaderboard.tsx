@@ -11,6 +11,9 @@ const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState<LeaderboardType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  //get user
+  const [user] = useState<string | null>(() => localStorage.getItem("user"));
+
   useEffect(() => {
     //* get leaderboard
     const getLeaderboardCaller = async () => {
@@ -63,17 +66,25 @@ const Leaderboard = () => {
               </thead>
               <tbody>
                 {leaderboard.map((entry, index) => (
-                  <tr key={index} className="odd:bg-col-1 even:bg-col-2">
+                  <tr
+                    key={index}
+                    className={`odd:bg-col-1 even:bg-col-2 ${
+                      entry.player === user ? "!bg-col-4" : ""
+                    }`}
+                  >
                     <td className="px-2 py-1">{index + 1}</td>
                     <td className="px-2 py-1">{entry.player}</td>
                     <td className="px-2 py-1">{entry.score}</td>
                     <td className="px-2 py-1">{entry.date}</td>
-                    <td className="px-2 py-1">{entry.time}</td>
+                    <td className="px-2 py-1">{entry.utc_time}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          <p className="text-center p-2">
+            * Only your highest score gets on the Leaderboard.
+          </p>
         </div>
       ) : (
         <div>

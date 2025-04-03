@@ -70,7 +70,6 @@ const SynthSlider = ({
         try {
           await createAttempt(user!, score);
           setAttemptStored(true);
-          console.log("Attempt stored!");
         } catch (error: any) {
           console.error(
             "Error occurred while creating attempt:",
@@ -218,7 +217,6 @@ const SynthSlider = ({
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      console.log("Enter");
       e.preventDefault(); // Prevents the default behavior to stop form submission from happening twice
       const form = e.currentTarget.closest("form") as HTMLFormElement;
       form?.requestSubmit(); // Triggers form submission with validation
@@ -434,7 +432,7 @@ const SynthSlider = ({
         attemptStored && (
           // if game over & attempt stored
           <>
-            <div className="bg-col-4 w-[175px] p-2 mx-auto flex flex-col mt-6 mb-6 text-xl border border-col-3 rounded-b-2xl">
+            <div className="bg-col-4 w-[175px] p-2 mx-auto flex flex-col mt-6 text-xl border border-col-3 rounded-b-2xl">
               <p className="text-center">
                 <strong>{user}</strong>, your score was:
               </p>
@@ -443,6 +441,7 @@ const SynthSlider = ({
                 <strong>{synths.length * 10}</strong>
               </p>
             </div>
+
             <Leaderboard />
           </>
         )
